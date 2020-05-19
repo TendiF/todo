@@ -25,7 +25,7 @@ const knex = require('knex')({
         .integer('id_user')
         .unsigned()
         .references('users.id');
-      table.timestamp('when');
+      table.timestamp('activity_date');
       table.timestamps(true, true);
     })
    

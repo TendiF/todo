@@ -18,11 +18,20 @@ class TodoModel{
     async get(where = {}){
         return new Promise(resolve => {
             let query = `SELECT * FROM ${this.tabel}`
+            let whereStmt = []
             if(Object.keys(where).length != 0 && where.constructor === Object){
-                query += ` WHERE ?`
+                let i = 0
+                for (const k in where) {
+                   if(i == 0){
+                        query += ` WHERE `+k+` = ?`
+                   }else{
+                        query += ` AND `+k+ ` = ?`
+                   }
+                   whereStmt.push(where[k])
+                   i++
+                }
             }
-            
-            connection.query(query, where , function (error, results, fields) {
+            connection.query(query, whereStmt , function (error, results, fields) {
                 if (error) throw error;
                 resolve(results)
             });

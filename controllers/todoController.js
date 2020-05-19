@@ -11,15 +11,20 @@ class TodoController{
     async add(req, res){
         let {
             name,
-            when,
+            activity_date,
             location
         } = req.body
+
+        let todos = await todoModel.get({activity_date})
 
         let userErr = {}
 
         if(!name) userErr.name = 'required' 
-        if(!when) userErr.password = 'required'
+        if(!activity_date) userErr.password = 'required'
         if(!location) userErr.location = 'required'
+        if(!/\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/g.test(activity_date)) userErr.activity_date = 'invalid format'
+        if(todos.length >= 1) userErr.activity_date = 'canot set with same date'
+
 
         if(Object.keys(userErr).length != 0 && userErr.constructor === Object){
             return res.status(400).send({
@@ -31,7 +36,7 @@ class TodoController{
 
         let result = await todoModel.add({
             name,
-            when,
+            activity_date,
             location,
             id_user : req.auth.id
         })
@@ -44,8 +49,16 @@ class TodoController{
     }
 
     async get(req, res){
-        console.log(req.auth)
-        let result = await todoModel.get({id_user : req.auth.id})
+        let params = {id_user : req.auth.id}
+        let {
+            location,
+            activity_date
+        } = req.query
+
+        if(location) params.location = location
+        if(activity_date) params.activity_date = activity_date
+        let result = await todoModel.get(params)
+        
         res.send({
             message : 'success',
             data : result
