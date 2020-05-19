@@ -1,13 +1,9 @@
 require('dotenv').config()
+require('express-group-routes')
+const bodyParser = require('body-parser')
 const express = require('express')
 const app = express()
-// const router = express.Router()
-// const db = require('./db')
-// const users = require('./routes/users')
-const jwt = require('jsonwebtoken')
-// const userModel = require('./models/usersModel')
-const db = require('./db')
-const migration = require('./db-migration')
+const usersRoute = require('./routes/users')
 
 
 const port = process.env.PORT || 8080;
@@ -28,10 +24,15 @@ const port = process.env.PORT || 8080;
 
 // }
 
+app.use(bodyParser.urlencoded({extended: true}))
 
-app.get('/', (req, res) => {
-    res.send('hai')
-});
+// parse application/json
+app.use(bodyParser.json())
+
+
+app.group('/user', router => {
+  usersRoute(router)
+})
 
 app.listen(port, function () {
   console.log(`Example app listening on port ${port}!`)

@@ -9,3 +9,6 @@
 2. to run this backend
     - setup .env take required variabel from .env_example
     - $ docker-compose up -d
+
+3. run migration 
+    - $ docker exec -it todo_nodejs node db-migration.js

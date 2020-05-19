@@ -1,4 +1,5 @@
 var db_config = require('./db-config');
+const bcrypt = require('bcryptjs')
 
 
 const knex = require('knex')({
@@ -10,7 +11,7 @@ const knex = require('knex')({
   knex.schema
     .createTable('users', table => {
       table.increments('id');
-      table.string('username');
+      table.string('email');
       table.string('password');
       table.timestamps(true,true);
     })
@@ -23,17 +24,18 @@ const knex = require('knex')({
         .integer('id_user')
         .unsigned()
         .references('users.id');
-        table.timestamps(true, true);
+      table.timestamp('when');
+      table.timestamps(true, true);
     })
    
     // Then query the table...
-    .then(() =>
-      knex('users').insert({ username: 'Tim' })
-    )
+    .then(async () =>{
+      let password = await bcrypt.hash('asdasd', 8)
+      return knex('users').insert({ email: 'tendifirmansyah30@gmail.com', password })
+    })
    
     // ...and using the insert id, insert into the other table.
     .then(rows => {
-        console.log('rows', rows)
         return knex('todo').insert({ name: 'knex', id_user: rows[0] })
       }
     )
@@ -42,10 +44,13 @@ const knex = require('knex')({
     .then(() => 
       knex('users')
         .join('todo', 'users.id', 'todo.id_user')
-        .select('users.username as user', 'todo.name as account')
+        .select('users.email as user', 'todo.name as account')
     )
+
+    .then(() => {console.log('success migration');return process.exit(0)})
    
     // Finally, add a .catch handler for the promise chain
     .catch(e => {
       console.error(e);
+      process.exit(1);
     });
