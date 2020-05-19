@@ -11,13 +11,15 @@ class TodoController{
     async add(req, res){
         let {
             name,
-            when
+            when,
+            location
         } = req.body
 
         let userErr = {}
 
         if(!name) userErr.name = 'required' 
         if(!when) userErr.password = 'required'
+        if(!location) userErr.location = 'required'
 
         if(Object.keys(userErr).length != 0 && userErr.constructor === Object){
             return res.status(400).send({
@@ -30,6 +32,7 @@ class TodoController{
         let result = await todoModel.add({
             name,
             when,
+            location,
             id_user : req.auth.id
         })
 
