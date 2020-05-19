@@ -1,5 +1,6 @@
 require('dotenv').config()
 require('express-group-routes')
+const connection = require('./db')
 const bodyParser = require('body-parser')
 const express = require('express')
 const app = express()
@@ -29,6 +30,37 @@ const auth = async(req, res, next) => {
   }
 
 }
+var CronJob = require('cron').CronJob;
+var job = new CronJob('*/59 * * * * *', () => {
+    console.log('from cron')
+    //handle daily
+    connection.query(`SELECT id_user FROM todos WHERE recurring = 'daily' AND HOUR(activity_date) = ${new Date().getHours()}`, function (error, results, fields) {
+      if (error) throw error;
+      for (const id_user of results) {
+        console.log('send daily to', id_user)
+      }
+    });
+    // Monthly
+    connection.query(`SELECT id_user FROM todos WHERE recurring = 'monthly' AND DAY(activity_date) = ${new Date().getDate()}`, function (error, results, fields) {
+      if (error) throw error;
+      for (const id_user of results) {
+        console.log('send monthly to', id_user)
+      }
+    });
+
+    // Annual
+    connection.query(`SELECT id_user FROM todos WHERE recurring = 'yearly' AND MONTH(activity_date) = ${new Date().getMonth() +1}`, function (error, results, fields) {
+      if (error) throw error;
+      for (const id_user of results) {
+        console.log('send monthly to', id_user)
+      }
+    });
+  }, () =>  {
+    console.error('cron stop')
+  },
+);
+
+job.start()
 
 app.use(bodyParser.urlencoded({extended: true}))
 

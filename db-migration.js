@@ -27,6 +27,7 @@ const knex = require('knex')({
         .references('users.id');
       table.timestamp('activity_date');
       table.timestamps(true, true);
+      table.enu('recurring', ['daily', 'monthly', 'yearly'])
     })
    
     // Then query the table...

@@ -12,3 +12,6 @@
 
 3. run migration 
     - $ docker exec -it todo_nodejs node db-migration.js
+
+4. postman
+    - https://www.getpostman.com/collections/2c6990717a8fe037b106
