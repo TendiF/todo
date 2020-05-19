@@ -74,13 +74,12 @@ class UserController{
         }
 
         let results = await userModel.get({email})
-
         let user = results.length ? results[0] : null 
 
         let isMatch = user ? await bcrypt.compare(password, user.password) : false
 
         if(isMatch){
-            const token = jwt.sign({_id: user._id}, process.env.JWT_KEY)
+            const token = jwt.sign({id: user.id}, process.env.JWT_KEY)
             user.token = token
             res.send({
                 message : 'success',

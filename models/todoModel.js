@@ -1,7 +1,7 @@
 const connection = require('../db')
-class UserModel{
+class TodoModel{
     constructor(){
-        this.tabel = 'users'
+        this.tabel = 'todos'
         this.add = this.add.bind(this)
         this.get = this.get.bind(this)
     }
@@ -21,6 +21,7 @@ class UserModel{
             if(Object.keys(where).length != 0 && where.constructor === Object){
                 query += ` WHERE ?`
             }
+            
             connection.query(query, where , function (error, results, fields) {
                 if (error) throw error;
                 resolve(results)
@@ -29,4 +30,4 @@ class UserModel{
     }
 }
 
-module.exports = UserModel
+module.exports = TodoModel
