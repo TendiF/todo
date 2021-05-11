@@ -26,7 +26,7 @@
     "express-group-routes": "^1.1.0",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "mysql": "^2.18.1",
     "validator": "^13.0.0"
   },
